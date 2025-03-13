@@ -1,0 +1,67 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Formulario de Registro</title>
+    <script>
+        function agregarCamposAutos() {
+            let numAutos = document.getElementById('cuantosAutos').value;
+            let contenedor = document.getElementById('autosContainer');
+            contenedor.innerHTML = '';
+            for (let i = 0; i < numAutos; i++) {
+                contenedor.innerHTML += `
+                    <div>
+                        <label>Modelo:</label>
+                        <input type="text" name="modelo[]" required>
+                        <label>Color:</label>
+                        <input type="text" name="color[]" required>
+                        <label>Placas:</label>
+                        <input type="text" name="placas[]" required>
+                    </div>
+                `;
+            }
+        }
+    </script>
+</head>
+<body>
+    <form method="POST">
+        <label>Cluster:</label>
+        <input type="text" name="cluster" required>
+        <label>Casa:</label>
+        <input type="text" name="casa" required>
+        <label>Fecha de entrada:</label>
+        <input type="date" name="fentrada" required>
+        <label>Fecha de salida:</label>
+        <input type="date" name="fsalida" required>
+        <label>Propietario:</label>
+        <input type="text" name="propietario" required>
+        <label>Tel. Propietario:</label>
+        <input type="text" name="telPropietario" required>
+        <label>Email Propietario:</label>
+        <input type="email" name="emailPropietario" required>
+        <label>Huésped:</label>
+        <input type="text" name="huesped" required>
+        <label>Tel. Huésped:</label>
+        <input type="text" name="telHuesped" required>
+        <label>Número de Visitas:</label>
+        <input type="number" name="numVisitas" required>
+        <label>Número de Menores:</label>
+        <input type="number" name="numMenores" required>
+        <label>Mascotas:</label>
+        <input type="text" name="mascotas" required>
+        <label>Tipo de Mascotas:</label>
+        <input type="text" name="cuantasTipo" required>
+        <label>Trae Autos:</label>
+        <input type="text" name="traeAutos" required>
+        <label>¿Cuántos Autos?:</label>
+        <input type="number" id="cuantosAutos" name="cuantosAutos" required oninput="agregarCamposAutos()">
+        
+        <div id="autosContainer"></div>
+        
+        <label>Placas Auto Principal:</label>
+        <input type="text" name="autoPlacas" required>
+        
+        <button type="submit">Enviar</button>
+    </form>
+</body>
+</html>
