@@ -35,12 +35,14 @@ const Contacto = sequelize.define(
     {
       // Model attributes are defined here
       nombre: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
+        defaultValue:"",
         allowNull: true,
       },
       lastName: {
         type: DataTypes.STRING,
-        allowNull:false,
+        defaultValue:"",
+        allowNull:true,
       },
     },
     {
@@ -120,9 +122,15 @@ async function conectarWhatsapp(){
                             event.messages[0].message?.extendedTextMessage.text ||
                             event.messages[0].message?.text;
 
-            let contacto = await Contacto.findOne({where: {numero: id}});
+
+            if(!usercontext[id]){
+              usercontext[id] = {lista_mensajes: []}              
+              return;
+          }
+
+            let contacto = await Contacto.findOne({where: {id: id}});
             if(!contacto){
-              contacto = await Contacto.create({numero: id, nombre: nombre}); 
+              contacto = await Contacto.create({id: id, nombre: nombre}); 
             }
 
             let chat = await Mensaje.create({mensaje:mensaje,contactoId:contacto.id}); 
@@ -156,7 +164,7 @@ async function obtenerRespuestaOpenAI(mensaje, id){
 
     if(usercontext[id]?.lista_mensajes.length == 0) {
         usercontext[id].lista_mensajes = [
-            {"role":"system", "content":'Eres un asistente virtual para una propiedad de Airbnb llamada La Mexicana, ubicada en Club Nautico Teques. Tu misión es proporcionar información clara, amigable y detallada a los huéspedes, simulando la atención de un Superhost.\n'+
+            {"role":"system", "content":'Eres un asistente virtual para una propiedad de Airbnb llamada La Mexicana, ubicada en Club Nautico Teques. Tu misión es proporcionar información clara, amigable y detallada a los huéspedes, simulando la atención de un Superhost. Toma en cuenta que el huesped ya confirmó su reservación\n'+
 'Debes responder preguntas sobre:* \n'+
 '**Horarios de entrada y salida**  \n'+  
 '**Cómo llegar al Residencial Club Nautico Teques** (en auto y en transporte público)   \n'+
@@ -168,6 +176,7 @@ async function obtenerRespuestaOpenAI(mensaje, id){
 '**Actividades y experiencias recomendadas**  \n'+
 '**Restaurantes recomendados** \n'+
 '**Tiendas, farmacias y cajeros cercanos**   \n'+
+'**Hospedaje, si te preguntan por hospedaje no des detalles y envia el link de airbnb https://www.airbnb.mx/hosting/listings/editor/25366267** ya que la idea es que el usuario ya debe haber confirmado su reserva   \n'+
 '**Consejos de Superhost** para disfrutar al máximo la estadía \n'+
 'El numero de soporte es 5540861442'},
             {"role":"assistant", "content":'Cuando un huésped haga una pregunta, responde de manera **clara, concisa y amigable**. Usa emojis para hacer la conversación más atractiva. Si no tienes información específica, ofrece alternativas o formas de contacto para resolver dudas. .\n'+ 
